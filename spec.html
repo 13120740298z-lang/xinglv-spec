@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Xinglü v3 · Product specification</title>
+<meta name="description" content="What Xinglü does, which rule pack it reads, what it refuses to answer, and how each claim was verified.">
+<style>
+:root{
+  --paper:#FCFCFC; --surface:#F3F4F5; --ink:#111112; --ink2:#5C5D5F; --ink3:#8A8B8D;
+  --rule:#E5E5E5; --blue:#0064D4; --blue-weak:#E8F1FC; --warn:#A66416; --stop:#B3261E; --ok:#1B7F4B;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",Roboto,sans-serif;
+  --serif:ui-serif,Georgia,"Songti SC","Noto Serif SC",serif;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Roboto Mono",monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#111112;--surface:#1B1C1E;--ink:#F3F3F4;--ink2:#A8A9AB;--ink3:#7C7D80;--rule:#2E2F31;
+  --blue:#4C9AFF;--blue-weak:#17324F;--warn:#E0A458;--stop:#F28B82;--ok:#4CC38A}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.7 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:840px;margin:0 auto;padding:0 18px 90px}
+header{padding:44px 0 22px;border-bottom:1px solid var(--rule)}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3)}
+h1{font-family:var(--serif);font-size:clamp(26px,5.4vw,38px);line-height:1.16;font-weight:600;letter-spacing:-.02em;margin:10px 0 8px}
+.sub{color:var(--ink2);font-size:15px;max-width:56ch}
+h2{font-size:19px;font-weight:650;margin:38px 0 10px;padding-top:14px;border-top:1px solid var(--rule);scroll-margin-top:20px}
+h3{font-size:15.5px;font-weight:650;margin:22px 0 6px}
+p{margin:9px 0}
+ul,ol{padding-left:20px;margin:9px 0}
+li{margin:4px 0}
+code{font-family:var(--mono);font-size:.88em;background:var(--surface);padding:1px 5px;border-radius:5px}
+a{color:var(--blue);text-decoration:none;border-bottom:1px solid var(--blue-weak)}
+a:hover{border-bottom-color:var(--blue)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;margin:12px 0}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);background:var(--surface);white-space:nowrap}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 0}
+.toc a{font-size:12.5px;padding:5px 11px;border:1px solid var(--rule);border-radius:16px;color:var(--ink2)}
+.toc a:hover{border-color:var(--blue);color:var(--blue)}
+.callout{border-left:3px solid var(--blue);background:var(--blue-weak);padding:12px 15px;border-radius:0 12px 12px 0;margin:14px 0;font-size:14.5px}
+.callout[data-tone="warn"]{border-left-color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,var(--paper))}
+.callout[data-tone="stop"]{border-left-color:var(--stop);background:color-mix(in srgb,var(--stop) 12%,var(--paper))}
+.mono{font-family:var(--mono);font-size:.86em}
+.badge{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border:1px solid currentColor;border-radius:5px}
+.b-ok{color:var(--ok)}.b-warn{color:var(--warn)}.b-stop{color:var(--stop)}.b-mute{color:var(--ink3)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:12px 0}
+.card{border:1px solid var(--rule);border-radius:14px;padding:12px 14px;background:var(--surface)}
+.card .k{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3)}
+.card .v{font-family:var(--mono);font-size:20px;font-weight:600;margin-top:3px}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--rule);color:var(--ink3);font-size:12.5px}
+@media (max-width:720px){
+  table,thead,tbody,tr,td{display:block;width:100%}
+  thead{display:none}
+  tr{background:var(--surface);border-radius:12px;padding:5px 2px;margin-bottom:9px}
+  td{border:0;padding:5px 10px;display:grid;grid-template-columns:92px minmax(0,1fr);gap:8px}
+  td::before{content:attr(data-label);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);font-weight:700;padding-top:2px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Product specification · v3 · checked 2026-11-05</div>
+  <h1>Xinglü 行旅 — five questions, one verdict you can check</h1>
+  <p class="sub">An entry-decision tool for first-time visitors to China. It states which published rule covers your case, when that rule expires, what you must still satisfy, and where the official text is. It is not a marketing page: what it cannot answer is listed inside the product, not just here.</p>
+  <nav class="toc">
+    <a href="#position">Position</a><a href="#why">Why it exists</a><a href="#flow">Flow</a>
+    <a href="#rules">Rule pack</a><a href="#cliff">Expiry cliff</a><a href="#landing">After you land</a>
+    <a href="#trust">Trust mechanics</a><a href="#honest">Honesty list</a><a href="#verified">Verification</a>
+  </nav>
+</header>
+
+<h2 id="position">1. Position</h2>
+<p><strong>Xinglü</strong> answers three questions a first-time visitor cannot answer themselves: <em>can I get in</em>, <em>by when must I act</em>, and <em>what happens in my first hour on the ground</em>. It outputs a verdict plus the evidence chain, then hands the user back to the official page. It does not book, does not act as a visa agency, and does not draw a map it cannot load.</p>
+<div class="grid">
+  <div class="card"><div class="k">Rule pack</div><div class="v">visa-2026.11.1</div></div>
+  <div class="card"><div class="k">30-day list</div><div class="v">50</div></div>
+  <div class="card"><div class="k">240-hour list</div><div class="v">57</div></div>
+  <div class="card"><div class="k">Phrasebook</div><div class="v">252</div></div>
+  <div class="card"><div class="k">Assertions</div><div class="v">83 / 83</div></div>
+  <div class="card"><div class="k">External requests</div><div class="v">2</div></div>
+</div>
+<h3>Who it is for</h3>
+<ul>
+  <li><strong>Primary:</strong> adults holding a foreign passport, travelling to China for tourism or short business, working in English, unfamiliar with Chinese official portals.</li>
+  <li><strong>Secondary:</strong> Chinese hosts arranging a visit for foreign friends; editors who need to cite the policy line rather than paraphrase it.</li>
+  <li><strong>Not for:</strong> anyone needing an agency to file for them, anyone needing live seat or ticket inventory, anyone needing immigration legal advice.</li>
+</ul>
+
+<h2 id="why">2. Why it exists — and why bigger players do not do this</h2>
+<table>
+  <thead><tr><th>Player</th><th>What they do well</th><th>Structural reason they cannot do this</th></tr></thead>
+  <tbody>
+    <tr><td data-label="Player">Trip.com / Booking / Klook</td><td data-label="Strength">Transaction depth, multi-language, live inventory</td><td data-label="Blocker">Revenue is the booking. TripGenie describes itself as AI that drives transactions; telling a user "you cannot enter" is negative ROI.</td></tr>
+    <tr><td data-label="Player">NIA / 12367 / official portals</td><td data-label="Strength">Authoritative text, the only place anything is actually filed</td><td data-label="Blocker">Organised by administrative matter, not by "my passport × my port × my days". 12367 needs real-name face verification.</td></tr>
+    <tr><td data-label="Player">Google Search / Maps / Translate</td><td data-label="Strength">Best-in-class general answers</td><td data-label="Blocker">Unavailable on the mainland — precisely when the traveller needs them.</td></tr>
+    <tr><td data-label="Player">IATA Timatic</td><td data-label="Strength">The system that actually decides boarding</td><td data-label="Blocker">Sold to airlines, no consumer surface, no citations a traveller can read.</td></tr>
+    <tr><td data-label="Player">iVisa / VisaHQ</td><td data-label="Strength">Guided visa applications, 15 languages</td><td data-label="Blocker">Priced as a service fee; the checker is a funnel, and nothing covers payment binding or hotel qualification.</td></tr>
+    <tr><td data-label="Player">ChatGPT / Gemini / DeepSeek / Doubao / Qwen</td><td data-label="Strength">Free-form follow-ups, multi-language, itinerary drafting</td><td data-label="Blocker">No expiry semantics, no refusal mechanism, no offline package; ChatGPT and Gemini are not supported in mainland China. The official visa-centre chatbot itself disclaims real-time accuracy.</td></tr>
+    <tr><td data-label="Player">Meta Muse (personal agent)</td><td data-label="Strength">Cloud VM per user, fills forms, books</td><td data-label="Blocker">US and Canada only, depends on Gmail / Google Calendar / OpenTable / WhatsApp — zero coverage for travel to China.</td></tr>
+  </tbody>
+</table>
+<div class="callout">One sentence: platforms sell <em>booking</em>, official sites publish <em>rules</em>, general models produce <em>plausible text</em>. Xinglü produces a <em>cited, dated, scoped conclusion</em> and refuses when it has not verified.</div>
+
+<h2 id="flow">3. Flow</h2>
+<p>Not a form — a conversation. One question at a time, chips plus free text, every question skippable, every answer changeable. A sixth question appears <strong>only when it can change the outcome</strong>: whether you hold a through ticket to a third country is asked when the 30-day list does not cover you and the 240-hour channel might.</p>
+<table>
+  <thead><tr><th>#</th><th>Question</th><th>Decides</th></tr></thead>
+  <tbody>
+    <tr><td data-label="#">1</td><td data-label="Q">Where are you going?</td><td data-label="Drives">Weather coordinates, location card, seasonal note</td></tr>
+    <tr><td data-label="#">2</td><td data-label="Q">Roughly when do you arrive?</td><td data-label="Drives">Expiry test, action timeline (relative answers produce an estimated window and say so)</td></tr>
+    <tr><td data-label="#">3</td><td data-label="Q">How many nights?</td><td data-label="Drives">30-day and 240-hour caps</td></tr>
+    <tr><td data-label="#">4</td><td data-label="Q">Which passport?</td><td data-label="Drives">Channel membership, per-country expiry. Used for the check only; never stored off-device</td></tr>
+    <tr><td data-label="#">5</td><td data-label="Q">What matters most?</td><td data-label="Drives">Which extra findings appear</td></tr>
+    <tr><td data-label="+">+</td><td data-label="Q">Through ticket to a third country?</td><td data-label="Drives">240-hour channel only, only when it can flip the verdict</td></tr>
+  </tbody>
+</table>
+
+<h2 id="rules">4. Rule pack and verdict tiers</h2>
+<p>The interface contains no policy numbers. It reads <code>XL_RULES</code> (channels, sources, facts) and <code>XL_LISTS</code> (country lists transcribed from v1's NIA-sourced pack, machine-copied, never hand-expanded). The engine is a pure function; a language model is not in the determination path.</p>
+<table>
+  <thead><tr><th>Tier</th><th>Meaning</th><th>When</th></tr></thead>
+  <tbody>
+    <tr><td data-label="Tier"><span class="badge b-ok">clear</span></td><td data-label="Meaning">A channel covers the trip and its conditions are confirmed</td><td data-label="When">Listed passport, stay within cap, purpose covered, onward ticket confirmed where required</td></tr>
+    <tr><td data-label="Tier"><span class="badge b-ok">conditional</span></td><td data-label="Meaning">A channel fits but an unconfirmed condition decides it</td><td data-label="When">Usually the through ticket</td></tr>
+    <tr><td data-label="Tier"><span class="badge b-warn">window_conflict</span></td><td data-label="Meaning">The published policy expires inside or before the trip</td><td data-label="When">Trip end or start passes the channel expiry date</td></tr>
+    <tr><td data-label="Tier"><span class="badge b-stop">visa_required</span></td><td data-label="Meaning">No transcribed channel covers it</td><td data-label="When">Not on the list, stay too long, purpose not covered, non-ordinary passport</td></tr>
+    <tr><td data-label="Tier"><span class="badge b-mute">unverified</span></td><td data-label="Meaning">Refuses to conclude</td><td data-label="When">Passport or nights missing</td></tr>
+    <tr><td data-label="Tier"><span class="badge b-mute">official_only</span></td><td data-label="Meaning">Degrades to links only</td><td data-label="When">Rule pack older than its 30-day review window</td></tr>
+  </tbody>
+</table>
+<h3>Channels carried</h3>
+<table>
+  <thead><tr><th>Channel</th><th>Scope</th><th>Stay</th><th>Expiry</th><th>Verification state</th></tr></thead>
+  <tbody>
+    <tr><td data-label="Channel">30-day unilateral</td><td data-label="Scope">50 nationalities, ordinary passports, tourism / business / family / exchange / transit</td><td data-label="Stay">≤30 days</td><td data-label="Expiry">2026-12-31 (Brunei none stated; Russia 2027-12-31)</td><td data-label="State"><span class="badge b-ok">official</span></td></tr>
+    <tr><td data-label="Channel">240-hour transit</td><td data-label="Scope">57 nationalities, 65 ports, 24 regions, through ticket required</td><td data-label="Stay">≤240h</td><td data-label="Expiry">open-ended</td><td data-label="State"><span class="badge b-ok">official</span> counts; <span class="badge b-warn">port list not transcribed</span></td></tr>
+    <tr><td data-label="Channel">24-hour direct transit</td><td data-label="Scope">Stay inside the restricted area</td><td data-label="Stay">≤24h</td><td data-label="Expiry">from 2025-11-05</td><td data-label="State"><span class="badge b-warn">secondary</span></td></tr>
+    <tr><td data-label="Channel">Hainan 30-day</td><td data-label="Scope">61 nationalities, Hainan area, tourism</td><td data-label="Stay">≤30 days</td><td data-label="Expiry">—</td><td data-label="State"><span class="badge b-warn">country list not transcribed</span></td></tr>
+    <tr><td data-label="Channel">Cruise 15-day / ASEAN group</td><td data-label="Scope">Group forms at designated ports</td><td data-label="Stay">15 days / 6 days</td><td data-label="Expiry">—</td><td data-label="State"><span class="badge b-warn">secondary</span></td></tr>
+  </tbody>
+</table>
+
+<h2 id="cliff">5. The expiry cliff — the feature that general tools cannot have</h2>
+<p>As of the 2025-11-03 extension notice, most of the 30-day list is published as running to <strong>2026-12-31 24:00</strong> — 56 days from the date this pack was checked. Official pages carry three different counts (54 / 55 / 57) for transit coverage, and the policy changed five times in a year (72/144h→240h in 2024-12, 55 countries 2025-06, 65 ports 2025-11-05, UK added 2026-02-17, 57 countries 2026-08-20).</p>
+<div class="callout" data-tone="warn">The engine therefore does not pretend to be current — it states the date it was checked. And it does not infer law: the announcement gives an end date and is silent on stays continuing past it, so a crossing trip is flagged <code>window_conflict</code> with both dates shown, not a prediction.</div>
+<p>Concretely, a German traveller arriving 2026-12-28 for 7 nights gets: expiry <span class="mono">2026-12-31</span>, trip end <span class="mono">2027-01-04</span>, <code>straddles: true</code>, and the instruction to look for an extension notice before booking anything non-refundable. A Russian traveller in January 2027 gets no conflict, because their stated expiry is 2027-12-31.</p>
+
+<h2 id="landing">6. After you land — the half nobody else covers</h2>
+<table>
+  <thead><tr><th>Item</th><th>What the product says</th><th>State</th></tr></thead>
+  <tbody>
+    <tr><td data-label="Item">Digital arrival card</td><td data-label="Says">Free, official NIA address only, within ~72h before arrival, produces a QR; paid look-alike sites exist and are publicly warned about. The seven exempt categories are marked unverified.</td><td data-label="State"><span class="badge b-ok">official</span></td></tr>
+    <tr><td data-label="Item">Hotel foreign-guest qualification</td><td data-label="Says">A confirmed booking can still be refused; ships the exact Chinese sentence and pinyin to ask <em>before</em> booking.</td><td data-label="State"><span class="badge b-warn">secondary</span></td></tr>
+    <tr><td data-label="Item">24-hour accommodation registration</td><td data-label="Says">Statutory under Article 39 for non-hotel stays; the "now online nationwide" claim is carried as unverified pending an official URL.</td><td data-label="State"><span class="badge b-ok">law</span> / <span class="badge b-warn">online channel</span></td></tr>
+    <tr><td data-label="Item">Payment reality</td><td data-label="Says">Foreign-card binding, reported 3% above ¥200, ~¥6,000 WeChat ceiling, Apple/Google Pay largely not accepted — labelled not officially verified.</td><td data-label="State"><span class="badge b-warn">secondary</span></td></tr>
+    <tr><td data-label="Item">Rail</td><td data-label="Says">Passport self-verification frequently falls back to a station window; do it before you need a seat. No seat availability is ever shown.</td><td data-label="State"><span class="badge b-ok">official</span> / <span class="badge b-warn">lead time</span></td></tr>
+    <tr><td data-label="Item">Apps and SIM</td><td data-label="Says">Install and sign into WhatsApp before departure (removed from the China App Store); carrier eSIM generally needs a mainland ID.</td><td data-label="State"><span class="badge b-warn">secondary</span></td></tr>
+    <tr><td data-label="Item">First hour</td><td data-label="Says">Immigration → baggage → customs QR → connectivity → payment → check-in → registration, in the order actually met.</td><td data-label="State"><span class="badge b-mute">sequencing</span></td></tr>
+  </tbody>
+</table>
+
+<h2 id="trust">7. Trust mechanics (implemented, not described)</h2>
+<ul>
+  <li><strong>Four-part citation on every claim:</strong> source name (EN + 中文), direct official link, queried or page date, scope. Policy items add "official snapshot, not legal advice".</li>
+  <li><strong>Five-state adapter:</strong> <code>ok / failed / snapshot / link / estimate</code>. Live calls use <code>no-store</code>, 8s AbortController timeout, and on failure display the reason — never a previous value.</li>
+  <li><strong>Confidence tiers are visible:</strong> a <span class="badge b-warn">not officially verified</span> badge is rendered in the UI, not hidden in a footnote.</li>
+  <li><strong>Staleness degradation:</strong> past a 30-day review window the engine stops concluding and returns links only.</li>
+  <li><strong>Banned phrasing:</strong> <em>guaranteed entry</em>, <em>visa approved</em>, <em>definitely on time</em>, and never presenting an estimate as live. Asserted in tests, including that negations ("not a guarantee of entry") remain legal.</li>
+  <li><strong>No map it cannot load:</strong> coordinates, three hand-offs (geo:, Amap, Google Maps) and an explicit note that Amap's web service returns <code>INVALID_USER_KEY</code> without a key.</li>
+  <li><strong>Offline first:</strong> one self-contained HTML file, no external assets, opens from <code>file://</code>, prints. Live blocks keep the values captured at export time with their timestamp.</li>
+  <li><strong>Privacy:</strong> passport country and itinerary only; no passport number, no account, no network call except the two data APIs, everything in device-local storage.</li>
+</ul>
+
+<h2 id="honest">8. What it does not do</h2>
+<table>
+  <thead><tr><th>Capability</th><th>Status</th><th>Why</th></tr></thead>
+  <tbody>
+    <tr><td data-label="Cap">Embedded live map</td><td data-label="Status">Not done</td><td data-label="Why">No key; drawing tiles that fail to load is a lie to a user standing at a gate.</td></tr>
+    <tr><td data-label="Cap">Flight status</td><td data-label="Status">Not done</td><td data-label="Why">Free tiers are ~100 calls/month and non-commercial; a feature that dies mid-month is worse than none.</td></tr>
+    <tr><td data-label="Cap">Seat or ticket inventory</td><td data-label="Status">Not done</td><td data-label="Why">12306 publishes no public interface; official link only.</td></tr>
+    <tr><td data-label="Cap">Per-country expiry on the transit list</td><td data-label="Status">Not asserted</td><td data-label="Why">No single official page consolidates it; the conflict is shown rather than resolved by guess.</td></tr>
+    <tr><td data-label="Cap">65-port and 61-country lists</td><td data-label="Status">Not transcribed</td><td data-label="Why">Verification pass was interrupted. The product marks these unverified and refuses to conclude on them.</td></tr>
+    <tr><td data-label="Cap">Payments, accounts, sync</td><td data-label="Status">Not done by design</td><td data-label="Why">Trust is the asset; taking money or identity data would spend it.</td></tr>
+    <tr><td data-label="Cap">LLM answers</td><td data-label="Status">Not in the determination path</td><td data-label="Why">A model may rephrase this evidence pack one day; it will not decide eligibility or invent a rule.</td></tr>
+  </tbody>
+</table>
+
+<h2 id="verified">9. How this specification was verified</h2>
+<ul>
+  <li><strong>Assertions:</strong> 83 automated checks, 83 passed — verdict tiers, 30/31-night and 240h boundaries, expiry straddle and post-expiry cases, Brunei/Russia overrides, staleness degradation, list and source integrity, secondary-fact labelling, banned-phrase discipline, EN/zh key parity, adapter envelopes including the no-stale-fallback rule, offline export containing no external script, and the answer-change rebuild.</li>
+  <li><strong>Runtime:</strong> driven in Chromium over <code>file://</code> at 390×844 and 1440×900 — 0 console errors, 0 horizontal overflow, no interactive control below 44px, and the two live APIs succeeding from a local file.</li>
+  <li><strong>Screenshots:</strong> <code>v3/shots/</code> — hero, verdict, full results, expanded evidence, phrasebook, desktop two-column, dark mode, Chinese UI — plus <code>shoot-report.json</code> with the measured numbers.</li>
+  <li><strong>Competitor and policy evidence:</strong> two research passes with per-item evidence grades; the primary-source list is in <code>docs/调研与v3执行报告-2026-11-05.md</code>.</li>
+</ul>
+
+<footer>
+  <p>Xinglü v3 · rule pack <span class="mono">visa-2026.11.1</span> · sources checked <span class="mono">2026-11-05</span>. Planning guidance, not a visa decision and not a guarantee of entry. Confirm with the NIA, your embassy or consulate, and your carrier before travel.</p>
+  <p>Product: <a href="./">./</a> · Tests: <a href="./tests.html">./tests.html</a> · This page: <a href="./spec.html">./spec.html</a></p>
+</footer>
+</div>
+</body>
+</html>
